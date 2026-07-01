@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.iosctl/
+.env
+.env.*
+*.tgz
+*.log
+.DS_Store

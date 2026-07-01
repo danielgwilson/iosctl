@@ -1,0 +1,62 @@
+{
+  "name": "iosctl",
+  "version": "0.1.0",
+  "description": "Agent-first CLI and skill for native iOS Simulator build, run, and proof loops",
+  "license": "MIT",
+  "author": "Daniel G Wilson",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielgwilson/iosctl.git"
+  },
+  "homepage": "https://github.com/danielgwilson/iosctl#readme",
+  "bugs": {
+    "url": "https://github.com/danielgwilson/iosctl/issues"
+  },
+  "bin": {
+    "iosctl": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ios",
+    "xcode",
+    "simulator",
+    "cli",
+    "agent-first",
+    "codex"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').chmodSync('dist/cli.js',0o755)\"",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "npm run typecheck",
+    "lint:public-surface": "node scripts/public-surface-check.mjs",
+    "pretest": "npm run build",
+    "test": "tsx --test",
+    "start": "node dist/cli.js",
+    "check:release": "npm run lint && npm run lint:public-surface && npm test && npm pack --dry-run --json --silent",
+    "prepublishOnly": "npm run check:release",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^14.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

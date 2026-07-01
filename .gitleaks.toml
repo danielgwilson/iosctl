@@ -1,0 +1,4 @@
+title = "iosctl gitleaks config"
+
+[extend]
+useDefault = true
