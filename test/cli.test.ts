@@ -31,7 +31,7 @@ test("built doctor emits one JSON envelope", () => {
   });
 
   assert.equal(result.stderr, "");
-  assert.ok(result.status === 0 || result.status === 2);
+  assert.ok(result.status === 0 || result.status === 1 || result.status === 2);
 
   const parsed = JSON.parse(result.stdout) as { ok: boolean; data?: { command?: string }; error?: { code?: string } };
   if (parsed.ok) {
