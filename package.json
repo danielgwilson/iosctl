@@ -48,7 +48,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "commander": "^14.0.2"
+    "commander": "^15.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.2",
