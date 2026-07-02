@@ -17,6 +17,38 @@ Default stance:
 - Do not claim the app works unless there is a receipt, screenshot path, or result artifact.
 - Do not pass secrets as command-line arguments.
 
+## skills.sh Package Shape
+
+This skill is published from the nested path `skills/iosctl/SKILL.md`. Do not depend on a root
+`SKILL.md`; Vercel's `skills` CLI lets a shallower `SKILL.md` shadow nested skills.
+
+Install the skill with:
+
+```bash
+npx -y skills add -g danielgwilson/iosctl --skill iosctl
+```
+
+Use it without installing with:
+
+```bash
+npx -y skills use danielgwilson/iosctl@iosctl
+```
+
+## Command Resolution
+
+Use `iosctl` when it is already available on `PATH`. If it is missing and Node.js is available,
+prefer the published package for one-off agent runs:
+
+```bash
+npx -y iosctl@latest doctor --json
+```
+
+Only ask the user to install globally when repeated local use is expected:
+
+```bash
+npm i -g iosctl
+```
+
 ## Sanity Checks
 
 Start with:
@@ -26,10 +58,11 @@ iosctl doctor --json
 iosctl devices --json
 ```
 
-If `iosctl` is missing from `PATH`, install the published CLI when available:
+If `iosctl` is missing from `PATH`, use the published package for the same checks:
 
 ```bash
-npm i -g iosctl
+npx -y iosctl@latest doctor --json
+npx -y iosctl@latest devices --json
 ```
 
 For local development, use the repository checkout:
