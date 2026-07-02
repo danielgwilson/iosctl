@@ -21,7 +21,7 @@ Design stance:
 
 ## Install
 
-When published:
+After the first npm release:
 
 ```bash
 npm i -g iosctl
@@ -112,8 +112,9 @@ Canonical skill path: [skills/iosctl/SKILL.md](./skills/iosctl/SKILL.md).
 
 ## Release Notes
 
-This package is scaffolded for npm trusted publishing from GitHub Actions.
+This package is scaffolded for npm Trusted Publishing from GitHub Actions.
 
 - CI workflow: `.github/workflows/ci.yml`
 - Publish workflow: `.github/workflows/publish.yml`
 - Public-surface lint: `npm run lint:public-surface`
+- Release runbook: [docs/PUBLISHING.md](./docs/PUBLISHING.md)
