@@ -6,6 +6,7 @@ import { join } from "node:path";
 import test from "node:test";
 import { parseEnvFile, selectSimulator } from "../src/proofRun.js";
 import { redactArgs, redactText } from "../src/redact.js";
+import { findElements, flattenAccessibilityTree, normalizeFrame } from "../src/ui.js";
 
 test("redacts common secret-like values", () => {
   const fakeSecret = `sk-${"12345678901234567890123456789012"}`;
@@ -94,4 +95,67 @@ test("selectSimulator picks requested device on newest matching runtime", () => 
   );
 
   assert.equal(selected?.udid, "new");
+});
+
+test("flattenAccessibilityTree creates compact refs and centers", () => {
+  const elements = flattenAccessibilityTree([
+    {
+      type: "Application",
+      frame: { x: 0, y: 0, width: 400, height: 800 },
+      children: [
+        {
+          AXLabel: "Book appointment",
+          AXUniqueId: "book-appointment",
+          type: "Button",
+          role: "AXButton",
+          enabled: true,
+          frame: { x: 20, y: 700, width: 200, height: 60 },
+        },
+      ],
+    },
+  ]);
+
+  assert.equal(elements.length, 2);
+  assert.equal(elements[1]?.ref, "e2");
+  assert.equal(elements[1]?.center?.x, 120);
+  assert.equal(elements[1]?.center?.y, 730);
+});
+
+test("findElements matches text, identifier, role, and ref", () => {
+  const elements = flattenAccessibilityTree([
+    {
+      type: "Application",
+      frame: { x: 0, y: 0, width: 400, height: 800 },
+      children: [
+        {
+          AXLabel: "Book appointment",
+          AXUniqueId: "book-appointment",
+          type: "Button",
+          role: "AXButton",
+          frame: { x: 20, y: 700, width: 200, height: 60 },
+        },
+        {
+          AXLabel: "Learn more",
+          type: "Button",
+          role: "AXButton",
+          frame: { x: 260, y: 710, width: 100, height: 30 },
+        },
+      ],
+    },
+  ]);
+
+  assert.equal(findElements(elements, { text: "book" }).length, 1);
+  assert.equal(findElements(elements, { identifier: "book-appointment", exact: true }).length, 1);
+  assert.equal(findElements(elements, { role: "button" }).length, 2);
+  assert.equal(findElements(elements, { ref: "e3" })[0]?.label, "Learn more");
+});
+
+test("normalizeFrame rejects invalid frames", () => {
+  assert.deepEqual(normalizeFrame({ x: 1, y: 2, width: 3, height: 4 }), {
+    x: 1,
+    y: 2,
+    width: 3,
+    height: 4,
+  });
+  assert.equal(normalizeFrame({ x: "nope", y: 2, width: 3, height: 4 }), undefined);
 });

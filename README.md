@@ -4,7 +4,7 @@ Agent-first CLI and skill for native iOS Simulator build, run, and proof loops.
 
 `iosctl` is intentionally boring: it wraps first-party Apple command-line tools and a small number of proven adjacent tools behind stable JSON, explicit artifacts, and predictable failures.
 
-Current status: Phase 1 proof spine. The CLI includes environment checks, Simulator inventory, and `proof-run` for build, install, launch, screenshot, and receipt artifacts. Semantic UI commands are planned next.
+Current status: Phase 2 proof and UI spine. The CLI includes environment checks, Simulator inventory, `proof-run` for build/install/launch/screenshot/receipts, and semantic UI snapshot/find/tap/type/swipe commands backed by `idb`.
 
 ## Why
 
@@ -56,6 +56,11 @@ iosctl doctor --json
 iosctl devices --json
 iosctl proof-run --project App.xcodeproj --scheme App --bundle com.example.app --device "iPhone 17 Pro" --json
 iosctl proof-run --workspace App.xcworkspace --scheme App --bundle com.example.app --runtime "iOS 26" --json
+iosctl ui snapshot --device <UDID> --json
+iosctl ui find --text "Book appointment" --json
+iosctl ui tap --text "Book appointment" --json
+iosctl ui type --text-field "Ask anything..." --value "Can I schedule a visit?" --json
+iosctl ui swipe --direction up --json
 iosctl contract --json
 ```
 
@@ -67,8 +72,6 @@ iosctl sim ensure --device "iPhone 17 Pro" --runtime "iOS 26" --json
 iosctl build --project App.xcodeproj --scheme App --device "iPhone 17 Pro" --json
 iosctl install --app ./App.app --device <UDID> --json
 iosctl launch --bundle com.example.app --device <UDID> --env-file .env.local --json
-iosctl ui snapshot --device <UDID> --json
-iosctl ui tap --text "Book appointment" --json
 ```
 
 `proof-run` writes artifacts under `.iosctl/runs/<run-id>/` by default:
@@ -80,6 +83,11 @@ iosctl ui tap --text "Book appointment" --json
 - `screenshot-<name>.png`
 - `DerivedData/`
 - `xcodebuild.xcresult`
+
+`ui snapshot` writes raw accessibility evidence under `.iosctl/ui/<snapshot-id>/`:
+
+- `ui-tree.json`
+- `elements.json`
 
 ## Agent Contract
 

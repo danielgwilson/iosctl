@@ -58,8 +58,15 @@ The important substrate already exists in first-party Apple tools. The missing p
 
 ## Current Implementation Step
 
-Phase 1 proof spine is implemented: build, install, launch, screenshot, receipt, and proof-run.
+Phase 2 proof and semantic UI spine is implemented:
+
+- build, install, launch, screenshot, receipt, and proof-run,
+- UI snapshot, find, tap, type, and swipe through `idb`.
 
 ## Next Implementation Step
 
-Complete Phase 2 semantic UI: `ui snapshot`, `ui find`, `ui tap`, `ui type`, and `ui swipe` using `idb` accessibility-tree primitives.
+Complete Phase 3 proof gallery and result parsing:
+
+- `iosctl gallery --run <run-dir>`,
+- `iosctl test`,
+- `iosctl result summary/failures/attachments`.

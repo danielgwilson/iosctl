@@ -7,6 +7,7 @@
 3. Navigate a Simulator app semantically by accessibility labels or identifiers instead of relying on screenshots alone.
 4. Summarize Xcode build/test failures without flooding the agent context with raw logs.
 5. Run a safe local doctor check before an agent begins native iOS work.
+6. Tap, type, and swipe through a prototype while keeping raw UI trees in retrievable artifacts.
 
 ## Risk Profile
 

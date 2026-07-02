@@ -50,6 +50,7 @@ Exit codes:
 - `APP_NOT_FOUND`
 - `BUNDLE_LAUNCH_FAILED`
 - `UI_TREE_UNAVAILABLE`
+- `UI_ELEMENT_NOT_FOUND`
 - `TIMEOUT`
 
 ## Artifact Contract
@@ -98,6 +99,31 @@ Run receipts must include:
 8. writes `receipt.json` and `summary.md`.
 
 Env file values are passed to the app as `SIMCTL_CHILD_*` environment variables. Receipts include env keys only, never values.
+
+## Phase 2 Semantic UI
+
+`iosctl ui` currently supports:
+
+```bash
+iosctl ui snapshot --device <UDID> --json
+iosctl ui find --text "Book appointment" --json
+iosctl ui tap --text "Book appointment" --json
+iosctl ui type --text-field "Ask anything..." --value "Can I schedule a visit?" --json
+iosctl ui swipe --direction up --json
+```
+
+Semantic UI commands use `idb ui describe-all --nested` and normalize the accessibility tree into compact refs (`e1`, `e2`, ...). Full raw trees are written to `.iosctl/ui/<snapshot-id>/ui-tree.json`; normalized elements are written to `.iosctl/ui/<snapshot-id>/elements.json`.
+
+Selector behavior:
+
+- `--text` matches label/title/value.
+- `--text-field` is a text-target alias that matches label/title/value before typing.
+- `--identifier` matches accessibility identifier.
+- `--role` matches role/type/role description.
+- `--ref` matches a compact ref from a fresh snapshot.
+- `--exact` requires exact text/identifier match.
+
+Tap and swipe coordinates are rounded to integer pixels at the `idb` boundary.
 
 ## Secret Rules
 

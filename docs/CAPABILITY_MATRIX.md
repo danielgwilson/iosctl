@@ -8,8 +8,8 @@
 | test | prove behavior with XCTest | XcodeBuildMCP skill precedent | XcodeBuildMCP CLI precedent | `xcodebuild`, `xcresulttool` | `xcbeautify` optional | phase 2 | `.xcresult` is truth. |
 | install and launch | prove app starts | XcodeBuildMCP skill precedent | `simctl` | `simctl install`, `simctl launch` | `idb launch` optional | core | Redact env values in receipts. |
 | screenshot and video | visual proof | XcodeBuildMCP skill precedent | `simctl` | `simctl io` | `idb` optional | core | Screenshots are proof, not primary UI state. |
-| semantic UI tree | agent navigation | `ios-simulator-skill` precedent | `idb` | none outside XCUITest | `idb`, Appium/WDA, Maestro | phase 2 | Apple gap; use accessibility tree first. |
-| semantic tap/type/swipe | agent interactions | `ios-simulator-skill` precedent | `idb` | none outside XCUITest | `idb`, Appium/WDA, Maestro | phase 2 | Coordinate fallback only when explicit. |
+| semantic UI tree | agent navigation | `ios-simulator-skill` precedent | `idb` | none outside XCUITest | `idb`, Appium/WDA, Maestro | core | Implemented through nested `idb ui describe-all`. |
+| semantic tap/type/swipe | agent interactions | `ios-simulator-skill` precedent | `idb` | none outside XCUITest | `idb`, Appium/WDA, Maestro | core | Implemented with selector, ref, and coordinate paths. |
 | result parsing | compact failure summaries | XcodeBuildMCP skill precedent | `xcresulttool` | `xcresulttool` | `xcparse` optional | phase 2 | Avoid raw log floods. |
 | profiling evidence | performance artifacts | plugin precedent | `xctrace` | `xctrace` | ETTrace optional | later | Capture evidence first, thresholds later. |
 | flow runner | durable black-box journeys | Maestro precedent | Maestro | none | Maestro | optional | Wrap after low-level spine is stable. |

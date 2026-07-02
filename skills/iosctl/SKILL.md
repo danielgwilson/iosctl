@@ -75,15 +75,19 @@ Fallback manually in this order only when the CLI cannot complete:
 
 ## Semantic UI
 
-When available, use the planned semantic UI commands:
+Use semantic UI commands for app navigation:
 
 ```bash
 iosctl ui snapshot --device <UDID> --json
+iosctl ui find --text "Book appointment" --json
 iosctl ui tap --text "Book appointment" --json
 iosctl ui type --text-field "Ask anything..." --value "Can you help with scheduling?" --json
+iosctl ui swipe --direction up --json
 ```
 
-If unavailable, use `idb ui describe-all` directly before screenshot vision.
+`ui snapshot` stores the full raw accessibility tree and normalized element list under `.iosctl/ui/<snapshot-id>/`. Use those artifacts when stdout is capped.
+
+If the CLI cannot read the accessibility tree, use direct `idb ui describe-all --nested --json` before screenshot vision.
 
 ## Contract Essentials
 
@@ -106,6 +110,7 @@ If unavailable, use `idb ui describe-all` directly before screenshot vision.
   - `APP_NOT_FOUND`
   - `BUNDLE_LAUNCH_FAILED`
   - `UI_TREE_UNAVAILABLE`
+  - `UI_ELEMENT_NOT_FOUND`
   - `TIMEOUT`
 
 ## Safety
