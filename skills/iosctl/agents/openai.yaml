@@ -1,7 +1,4 @@
 interface:
   display_name: "iosctl"
-  short_description: "Build, run, inspect, and prove native iOS Simulator apps from a stable CLI."
-  default_prompt: "Use $iosctl for native iOS Simulator build/run/proof loops, with JSON output and receipt artifacts."
-
-policy:
-  allow_implicit_invocation: true
+  short_description: "Build and prove native iOS Simulator apps."
+  default_prompt: "Use $iosctl for native iOS Simulator build/run/proof loops."

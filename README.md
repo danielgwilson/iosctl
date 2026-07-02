@@ -102,10 +102,26 @@ See [docs/CONTRACT_V1.md](./docs/CONTRACT_V1.md).
 
 ## Skill
 
-When this repository is public:
+`iosctl` follows the Vercel `skills` CLI package layout: the installable skill lives at
+`skills/iosctl/SKILL.md`, and there is intentionally no root `SKILL.md` to shadow nested skill
+discovery.
+
+List the skill:
+
+```bash
+npx -y skills add danielgwilson/iosctl --list
+```
+
+Install the skill:
 
 ```bash
 npx -y skills add -g danielgwilson/iosctl --skill iosctl
+```
+
+Use the skill without installing:
+
+```bash
+npx -y skills use danielgwilson/iosctl@iosctl
 ```
 
 Canonical skill path: [skills/iosctl/SKILL.md](./skills/iosctl/SKILL.md).
