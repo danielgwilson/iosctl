@@ -5,6 +5,7 @@
   "license": "MIT",
   "author": "Daniel G Wilson",
   "type": "module",
+  "packageManager": "npm@11.6.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danielgwilson/iosctl.git"
@@ -21,6 +22,7 @@
     "docs",
     "skills",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
@@ -57,6 +59,7 @@
     "node": ">=22"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

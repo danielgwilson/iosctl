@@ -1,6 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { readFileSync } from "node:fs";
 import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -68,6 +67,29 @@ const binaryExtensions = new Set([
   ".zip",
 ]);
 
+const allowedPackedFilePatterns = [
+  /^package\.json$/,
+  /^README\.md$/,
+  /^CHANGELOG\.md$/,
+  /^LICENSE$/,
+  /^dist\/[A-Za-z0-9_-]+\.d\.ts$/,
+  /^dist\/[A-Za-z0-9_-]+\.js$/,
+  /^dist\/[A-Za-z0-9_-]+\.js\.map$/,
+  /^docs\/[A-Z0-9_/-]+\.md$/,
+  /^skills\/iosctl\/SKILL\.md$/,
+  /^skills\/iosctl\/agents\/openai\.yaml$/,
+];
+
+const requiredPackedFiles = new Set([
+  "package.json",
+  "README.md",
+  "CHANGELOG.md",
+  "LICENSE",
+  "dist/cli.js",
+  "docs/CONTRACT_V1.md",
+  "skills/iosctl/SKILL.md",
+]);
+
 const findings = [];
 
 function addFinding(scope, filePath, detail) {
@@ -131,17 +153,10 @@ function checkText(scope, filePath, text) {
   }
 }
 
-function walkFiles(dir, acc = []) {
-  for (const entry of readdirSync(dir)) {
-    const absolutePath = join(dir, entry);
-    const stats = statSync(absolutePath);
-    if (stats.isDirectory()) {
-      walkFiles(absolutePath, acc);
-    } else if (stats.isFile()) {
-      acc.push(absolutePath);
-    }
+function checkAllowedPackedFile(relativePath) {
+  if (!allowedPackedFilePatterns.some((pattern) => pattern.test(relativePath))) {
+    addFinding("pack", relativePath, "unexpected file in npm package");
   }
-  return acc;
 }
 
 function scanTrackedFiles() {
@@ -154,30 +169,33 @@ function scanTrackedFiles() {
 }
 
 function scanPackedFiles() {
-  const tempRoot = mkdtempSync(join(tmpdir(), "iosctl-public-surface-"));
-
   try {
-    const packJson = execFileSync(
-      "npm",
-      ["pack", "--json", "--silent", "--pack-destination", tempRoot],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
+    const packJson = execFileSync("npm", ["pack", "--dry-run", "--json", "--silent"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
 
     const parsed = JSON.parse(packJson);
     const packResult = Array.isArray(parsed) ? parsed[0] : parsed;
-    const tarballPath = join(tempRoot, packResult.filename);
+    const packedPaths = new Set(
+      packResult.files.map((file) => String(file.path).replace(/\\/g, "/")),
+    );
 
-    execFileSync("tar", ["-xzf", tarballPath, "-C", tempRoot], {
-      stdio: ["ignore", "ignore", "pipe"],
-    });
+    for (const requiredPath of requiredPackedFiles) {
+      if (!packedPaths.has(requiredPath)) {
+        addFinding("pack", requiredPath, "required file missing from npm package");
+      }
+    }
 
-    const packageRoot = join(tempRoot, "package");
-    for (const absolutePath of walkFiles(packageRoot)) {
-      const relativePath = relative(packageRoot, absolutePath).replace(/\\/g, "/");
+    const cliFile = packResult.files.find((file) => file.path === "dist/cli.js");
+    if (!cliFile || (Number(cliFile.mode) & 0o111) === 0) {
+      addFinding("pack", "dist/cli.js", "CLI entrypoint is not executable");
+    }
+
+    for (const relativePath of packedPaths) {
+      const absolutePath = join(repoRoot, relativePath);
+      checkAllowedPackedFile(relativePath);
       checkPath("pack", relativePath, packArtifactChecks);
       const text = readTextFile(absolutePath, relativePath);
       checkText("pack", relativePath, text);
@@ -185,8 +203,6 @@ function scanPackedFiles() {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     addFinding("pack", "package.json", `unable to inspect npm tarball (${message})`);
-  } finally {
-    rmSync(tempRoot, { recursive: true, force: true });
   }
 }
 

@@ -25,6 +25,22 @@ test("built CLI help works", () => {
   assert.match(output, /doctor/);
 });
 
+test("built doctor emits one JSON envelope", () => {
+  const result = spawnSync(process.execPath, ["dist/cli.js", "doctor", "--json"], {
+    encoding: "utf8",
+  });
+
+  assert.equal(result.stderr, "");
+  assert.ok(result.status === 0 || result.status === 2);
+
+  const parsed = JSON.parse(result.stdout) as { ok: boolean; data?: { command?: string }; error?: { code?: string } };
+  if (parsed.ok) {
+    assert.equal(parsed.data?.command, "doctor");
+  } else {
+    assert.ok(parsed.error?.code);
+  }
+});
+
 test("proof-run validation returns JSON failure and receipt artifact", () => {
   const tempDir = mkdtempSync(join(tmpdir(), "iosctl-test-"));
   const result = spawnSync(process.execPath, [
