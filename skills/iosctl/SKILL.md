@@ -42,7 +42,7 @@ npm link
 
 ## Proof Loop
 
-The intended proof-run shape is:
+Use:
 
 ```bash
 iosctl proof-run \
@@ -62,7 +62,9 @@ Expected artifacts:
 - screenshot path
 - optional UI tree path
 
-If proof-run is not implemented or fails, fall back manually in this order:
+If proof-run fails, inspect the returned `error.artifact` first. It should point at either `receipt.json` or the failing command log.
+
+Fallback manually in this order only when the CLI cannot complete:
 
 1. `iosctl doctor --json`
 2. `iosctl devices --json`

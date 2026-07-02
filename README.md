@@ -4,7 +4,7 @@ Agent-first CLI and skill for native iOS Simulator build, run, and proof loops.
 
 `iosctl` is intentionally boring: it wraps first-party Apple command-line tools and a small number of proven adjacent tools behind stable JSON, explicit artifacts, and predictable failures.
 
-Current status: scaffolded pre-MVP. The initial CLI includes environment checks and Simulator inventory. Build/run/proof commands are specified but not fully implemented yet.
+Current status: Phase 1 proof spine. The CLI includes environment checks, Simulator inventory, and `proof-run` for build, install, launch, screenshot, and receipt artifacts. Semantic UI commands are planned next.
 
 ## Why
 
@@ -54,6 +54,9 @@ Implemented:
 ```bash
 iosctl doctor --json
 iosctl devices --json
+iosctl proof-run --project App.xcodeproj --scheme App --bundle com.example.app --device "iPhone 17 Pro" --json
+iosctl proof-run --workspace App.xcworkspace --scheme App --bundle com.example.app --runtime "iOS 26" --json
+iosctl contract --json
 ```
 
 Planned:
@@ -64,10 +67,19 @@ iosctl sim ensure --device "iPhone 17 Pro" --runtime "iOS 26" --json
 iosctl build --project App.xcodeproj --scheme App --device "iPhone 17 Pro" --json
 iosctl install --app ./App.app --device <UDID> --json
 iosctl launch --bundle com.example.app --device <UDID> --env-file .env.local --json
-iosctl proof-run --project App.xcodeproj --scheme App --bundle com.example.app --device "iPhone 17 Pro" --json
 iosctl ui snapshot --device <UDID> --json
 iosctl ui tap --text "Book appointment" --json
 ```
+
+`proof-run` writes artifacts under `.iosctl/runs/<run-id>/` by default:
+
+- `receipt.json`
+- `summary.md`
+- `build.log`
+- `app.log`
+- `screenshot-<name>.png`
+- `DerivedData/`
+- `xcodebuild.xcresult`
 
 ## Agent Contract
 

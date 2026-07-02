@@ -56,6 +56,10 @@ The important substrate already exists in first-party Apple tools. The missing p
 - Simulator state can rot. Support disposable Simulator config and explicit erase gates.
 - Runtime artifacts can contain sensitive screenshots/logs. `.iosctl/` is ignored by git and excluded from package output.
 
+## Current Implementation Step
+
+Phase 1 proof spine is implemented: build, install, launch, screenshot, receipt, and proof-run.
+
 ## Next Implementation Step
 
-Complete the Phase 1 proof spine: build, install, launch, screenshot, receipt, and proof-run.
+Complete Phase 2 semantic UI: `ui snapshot`, `ui find`, `ui tap`, `ui type`, and `ui swipe` using `idb` accessibility-tree primitives.

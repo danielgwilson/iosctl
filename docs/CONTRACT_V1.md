@@ -63,6 +63,8 @@ Proof-producing commands write to:
   build.log
   app.log
   screenshot-*.png
+  DerivedData/
+  xcodebuild.xcresult
   ui-tree.json
 ```
 
@@ -81,6 +83,21 @@ Run receipts must include:
 - log paths
 - elapsed timings
 - normalized warnings/errors
+
+## Phase 1 Proof Run
+
+`iosctl proof-run` currently:
+
+1. resolves a matching available iOS Simulator,
+2. boots it if needed,
+3. builds the provided Xcode project/workspace with `xcodebuild`,
+4. installs the built app with `simctl install`,
+5. launches the bundle with `simctl launch`,
+6. waits for the configured settle period,
+7. captures a screenshot with `simctl io screenshot`,
+8. writes `receipt.json` and `summary.md`.
+
+Env file values are passed to the app as `SIMCTL_CHILD_*` environment variables. Receipts include env keys only, never values.
 
 ## Secret Rules
 

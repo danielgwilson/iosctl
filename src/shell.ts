@@ -10,10 +10,30 @@ export type CommandResult = {
   error?: string;
 };
 
-export function runCommand(command: string, args: string[], timeoutMs = 30_000): CommandResult {
+export type RunCommandOptions = {
+  timeoutMs?: number;
+  env?: NodeJS.ProcessEnv;
+  cwd?: string;
+};
+
+function normalizeOptions(optionsOrTimeout: number | RunCommandOptions): RunCommandOptions {
+  if (typeof optionsOrTimeout === "number") {
+    return { timeoutMs: optionsOrTimeout };
+  }
+  return optionsOrTimeout;
+}
+
+export function runCommand(
+  command: string,
+  args: string[],
+  optionsOrTimeout: number | RunCommandOptions = 30_000,
+): CommandResult {
+  const options = normalizeOptions(optionsOrTimeout);
   const result = spawnSync(command, args, {
     encoding: "utf8",
-    timeout: timeoutMs,
+    timeout: options.timeoutMs ?? 30_000,
+    env: options.env,
+    cwd: options.cwd,
     stdio: ["ignore", "pipe", "pipe"],
   });
 
